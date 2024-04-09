@@ -15,7 +15,7 @@ const defaultValue = {
     {
       id: 1,
       title: 'string',
-      describtion: 'string',
+      description: 'string',
       group: CardGroup.ToDo
     }
   ],
@@ -31,5 +31,15 @@ export default () => {
     return computed(() => cardStore[cardGroup])
   }
 
-  return { getCardsByGroup }
+  const addNewCard = (card: Card) => {
+    cardStore[card.group].push(card)
+  }
+
+  const deleteCard = (cardToDelete: Card) => {
+    cardStore[cardToDelete.group] = cardStore[cardToDelete.group].filter(
+      (card) => card.id !== cardToDelete.id
+    )
+  }
+
+  return { getCardsByGroup, addNewCard, deleteCard }
 }

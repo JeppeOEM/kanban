@@ -9,6 +9,6 @@ export enum CardGroup {
 export interface Card {
   id: number
   title: string
-  describtion: string
+  description: string
   group: CardGroup
 }
