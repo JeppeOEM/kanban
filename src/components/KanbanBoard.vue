@@ -5,11 +5,10 @@ import KanbanBoardGroup from './KanbanBoardGroup.vue'
 </script>
 
 <template>
-  <div>
-    <KanbanBoardGroup :group="'Additional Resources'"> </KanbanBoardGroup>
-    <KanbanBoardGroup :group="'To Do'"> </KanbanBoardGroup>
-    <KanbanBoardGroup :group="'Doing'"> </KanbanBoardGroup>
-    <KanbanBoardGroup :group="'Done'"> </KanbanBoardGroup>
-    <KanbanBoardGroup :group="'Additional Questions'"> </KanbanBoardGroup>
+  <div class="flex justify-around gap-5">
+    <KanbanBoardGroup :group="CardGroup.Resources"> </KanbanBoardGroup>
+    <KanbanBoardGroup :group="CardGroup.ToDo"> </KanbanBoardGroup>
+    <KanbanBoardGroup :group="CardGroup.Done"> </KanbanBoardGroup>
+    <KanbanBoardGroup :group="CardGroup.Questions"> </KanbanBoardGroup>
   </div>
 </template>
