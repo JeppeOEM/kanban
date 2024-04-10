@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { CardGroup, type Card } from '@/types/CardTypes'
+import CreateCard from './CreateCard.vue'
+import DraggableContent from './DraggableContent.vue'
 import useCards from '@/composeables/useCards'
 
 interface Props {
@@ -10,6 +12,7 @@ interface Props {
 const props = defineProps<Props>()
 const { getCardsByGroup } = useCards()
 const cardGroup = getCardsByGroup(props.group)
+
 
 // const pendingCard: Card[] = [
 //   {
@@ -21,10 +24,11 @@ const cardGroup = getCardsByGroup(props.group)
 // ]
 </script>
 <template>
-  <section cass="flex-1 list-none">
+  <section class="flex-1 list-none drop-zone">
     <h3>{{ props.group }}</h3>
-    <ul class="p-0">
-      <li v-for="card in cardGroup" :key="card.id">{{ card.title }}</li>
-    </ul>
+    <DraggableContent v-for="card in cardGroup" :key="card.id" :data="card">
+      {{ card.title }} {{ card.description }} {{ card.id }}
+    </DraggableContent>
+    <CreateCard></CreateCard>
   </section>
 </template>
