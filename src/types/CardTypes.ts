@@ -10,5 +10,5 @@ export interface Card {
   id: number
   title: string
   description: string
-  group: CardGroup
+  groupId: number
 }

@@ -1,45 +1,32 @@
-import { CardGroup, type Card } from '@/types/CardTypes'
 import { computed, reactive } from 'vue'
+import type { Card } from '@/types/CardTypes'
 
 interface CardStore {
-  [CardGroup.Resources]: Card[]
-  [CardGroup.ToDo]: Card[]
-  [CardGroup.Doing]: Card[]
-  [CardGroup.Done]: Card[]
-  [CardGroup.Questions]: Card[]
+  [groupId: number]: Card[]
 }
 
-const defaultValue = {
-  [CardGroup.Resources]: [],
-  [CardGroup.ToDo]: [
-    {
-      id: 1,
-      title: 'string',
-      description: 'string',
-      group: CardGroup.ToDo
-    }
-  ],
-  [CardGroup.Doing]: [],
-  [CardGroup.Done]: [],
-  [CardGroup.Questions]: []
-}
-
-const cardStore = reactive<CardStore>(defaultValue)
+const cardStore: CardStore = reactive({})
 
 export default () => {
-  const getCardsByGroup = (cardGroup: CardGroup) => {
-    return computed(() => cardStore[cardGroup])
+  const getCardsByGroupId = (groupId: number) => {
+    return computed(() => cardStore[groupId] || [])
   }
 
   const addNewCard = (card: Card) => {
-    cardStore[card.group].push(card)
+    if (!cardStore[card.groupId]) {
+
+      cardStore[card.groupId] = []
+    }
+    cardStore[card.groupId].push(card)
   }
 
   const deleteCard = (cardToDelete: Card) => {
-    cardStore[cardToDelete.group] = cardStore[cardToDelete.group].filter(
-      (card) => card.id !== cardToDelete.id
-    )
+    if (cardStore[cardToDelete.groupId]) {
+      cardStore[cardToDelete.groupId] = cardStore[cardToDelete.groupId].filter(
+        (card) => card.id !== cardToDelete.id
+      )
+    }
   }
 
-  return { getCardsByGroup, addNewCard, deleteCard }
+  return { getCardsByGroupId, addNewCard, deleteCard }
 }

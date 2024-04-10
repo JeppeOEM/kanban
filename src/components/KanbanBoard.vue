@@ -1,33 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { CardGroup } from '@/types/CardTypes'
 import KanbanBoardGroup from './KanbanBoardGroup.vue'
-
-
-const fetchDataFromDB = async () => {
-  // Simulated data fetching
-  return {
-    Resources: [...], // Data for Resources group
-    ToDo: [...],      // Data for ToDo group
-    Done: [...],      // Data for Done group
-    Questions: [...], // Data for Questions group
-  }
-}
-
-// Define a ref for storing the fetched data
-const cardGroups = ref<CardGroup>()
-
-// Fetch data from database when the component is mounted
+import useKanbanData from '@/composeables/useKanbanData'
 import { onMounted } from 'vue'
+
+const cardGroups = ref<number[]>([])
+
 onMounted(async () => {
-  cardGroups.value = await fetchDataFromDB()
+  const { fetchKanbanData } = useKanbanData()
+  const data = await fetchKanbanData()
+  console.log(data) 
 })
 </script>
+
 <template>
   <div class="flex justify-around gap-5">
-    <KanbanBoardGroup :group="CardGroup.Resources"> </KanbanBoardGroup>
-    <KanbanBoardGroup :group="CardGroup.ToDo"> </KanbanBoardGroup>
-    <KanbanBoardGroup :group="CardGroup.Done"> </KanbanBoardGroup>
-    <KanbanBoardGroup :group="CardGroup.Questions"> </KanbanBoardGroup>
+    <KanbanBoardGroup v-for="groupId in cardGroups" :key="groupId" :groupId="groupId" />
   </div>
 </template>

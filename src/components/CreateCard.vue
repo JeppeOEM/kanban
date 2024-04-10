@@ -10,7 +10,7 @@ const { addNewCard } = useCards()
 const newCard = reactive<Omit<Card, 'id'>>({
   title: '',
   description: '',
-  group: CardGroup.Done
+  groupId: 1
 })
 
 const resetForm = () => {
@@ -20,7 +20,7 @@ const resetForm = () => {
 const props = defineProps<Props>()
 
 interface Props {
-  group: CardGroup
+  groupId: number
 }
 const onSubmit = () => {
   // add new card
