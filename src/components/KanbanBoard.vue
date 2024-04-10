@@ -29,10 +29,10 @@ const handleDeleteGroup = async (groupId: KanbanGroup) => {
 }
 
 const handleUpdateTitle = async (groupId: KanbanGroup) => {
-  // const index = kanbanData.value.findIndex((group) => group.id === groupId)
-  // if (index !== -1) {
-  //   kanbanData.value = kanbanData.value.filter((group) => group.id !== groupId)
-  // }
+  const index = kanbanData.value.findIndex((group) => group.id === groupId)
+  if (index !== -1) {
+    kanbanData.value = kanbanData.value.filter((group) => group.id !== groupId)
+  }
   console.log(groupId, 'lol')
 }
 </script>

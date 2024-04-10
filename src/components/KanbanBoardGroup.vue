@@ -18,21 +18,42 @@ const cardGroup = getCardsByGroupId(props.id)
 const editedTitle = ref(props.title)
 const showEditIcon = ref(false)
 const isEditing = ref(false)
-const currentTitleId = ref<number | null>(null)
+const currentTitleId = ref<number | undefined>(undefined)
 
-const startEditing = (id: number) => {
+function closestChild(element, selector) {
+  var children = element.childNodes
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i]
+    if (child.nodeType === 1 && child.matches(selector)) {
+      return child
+    }
+  }
+  return null
+}
+
+const startEditing = async (event: Event) => {
   if (currentTitleId.value !== null) {
     cancelEdit()
+    isEditing.value = false
   }
-
-  currentTitleId.value = id
   isEditing.value = true
+  currentTitleId.value = props.id
+  const target = event.target
+
+  let h3 = await target?.closest('h3')
+  let input = h3.querySelector('input')
+  console.log(h3)
+  console.log(input)
+  //submits old selection on blur
+  input.focus()
 }
 
 const submitEdit = async () => {
   if (editedTitle.value !== undefined && props.id !== undefined) {
     try {
-      await updateKanbanGroup({ id: props.id, title: editedTitle.value })
+      let group = { id: props.id, title: editedTitle.value }
+      await updateKanbanGroup(group)
+      emit('update-title', group)
       isEditing.value = false
     } catch (error) {
       console.error('Error updating title:', error)
@@ -44,7 +65,7 @@ const submitEdit = async () => {
 
 const cancelEdit = () => {
   isEditing.value = false
-  editedTitle.value = props.title
+  // editedTitle.value = props.title
 }
 
 const onDelete = async () => {
@@ -55,15 +76,13 @@ const onDelete = async () => {
     console.error('Error adding new group:', error)
   }
 }
-
-const computedTitle = computed(() => (isEditing.value ? editedTitle.value : props.title))
 </script>
 
 <template>
   <section class="flex-1 list-none drop-zone">
     <h3
       class="cursor-pointer"
-      @click="startEditing"
+      @click="startEditing($event)"
       @mouseover="showEditIcon = true"
       @mouseleave="showEditIcon = false"
     >
@@ -75,7 +94,7 @@ const computedTitle = computed(() => (isEditing.value ? editedTitle.value : prop
         @blur="submitEdit()"
         autofocus
       />
-      <span v-if="showEditIcon && !isEditing" @click="startEditing">&#9998;</span>
+      <span v-if="showEditIcon && !isEditing">&#9998;</span>
     </h3>
     <button class="view-button" @click="onDelete()">
       <span class="icon">&#10006;</span>
