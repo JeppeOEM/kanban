@@ -3,6 +3,7 @@ const props = defineProps<{
   data: any //
 }>()
 
+console.log(props.data, 'llllllllllllllllllllllllllll')
 const onDragStart = (event: DragEvent) => {
   if (event.dataTransfer) {
     event.dataTransfer.dropEffect = 'move'
@@ -24,10 +25,12 @@ const onDrop = (event: DragEvent) => {
 </script>
 
 <template>
+  <p>DDDDDDDD</p>
+  <!-- <p>looo</p>
   <div @drop="onDrop($event)" @dragenter.prevent @dragover.prevent class="drop-zone">
     <div class="cursor-pointer" draggable="true" @dragstart="onDragStart" :id="props.data.id">
-      <h2>lol</h2>
+      <h2>lollllllllllllllllllllll</h2>
       <slot></slot>
     </div>
-  </div>
+  </div> -->
 </template>

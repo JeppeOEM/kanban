@@ -12,3 +12,9 @@ export interface Card {
   description: string
   groupId: number
 }
+
+export interface CardDto {
+  title: string
+  description: string
+  groupId: number
+}

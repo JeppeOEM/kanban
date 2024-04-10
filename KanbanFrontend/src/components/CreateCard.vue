@@ -1,31 +1,30 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { CardGroup, type Card } from '@/types/CardTypes'
+import { CardGroup, type CardDto } from '@/types/CardTypes'
 import useCards from '@/composeables/useCards'
+
+const props = defineProps({
+  groupId: Number
+})
 
 const displayForm = ref(false)
 
 const { addCard } = useCards()
 
-const newCard = reactive<Omit<Card, 'id'>>({
+const newCard = reactive<CardDto>({
   title: '',
   description: '',
-  groupId: 1
+  groupId: props.groupId
 })
 
 const resetForm = () => {
   ;(displayForm.value = false), (newCard.title = ''), (newCard.description = '')
 }
 
-const props = defineProps<Props>()
-
-interface Props {
-  groupId: number
-}
 const onSubmit = () => {
+  console.log(newCard)
   // add new card
   addCard({
-    id: Math.random() * 999999999999,
     ...newCard
   })
   resetForm()
