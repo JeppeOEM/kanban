@@ -12,9 +12,8 @@ export default () => {
     return computed(() => cardStore[groupId] || [])
   }
 
-  const addNewCard = (card: Card) => {
+  const addCard = (card: Card) => {
     if (!cardStore[card.groupId]) {
-
       cardStore[card.groupId] = []
     }
     cardStore[card.groupId].push(card)
@@ -28,5 +27,5 @@ export default () => {
     }
   }
 
-  return { getCardsByGroupId, addNewCard, deleteCard }
+  return { getCardsByGroupId, addCard, deleteCard }
 }

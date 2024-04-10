@@ -5,7 +5,7 @@ import useCards from '@/composeables/useCards'
 
 const displayForm = ref(false)
 
-const { addNewCard } = useCards()
+const { addCard } = useCards()
 
 const newCard = reactive<Omit<Card, 'id'>>({
   title: '',
@@ -24,7 +24,7 @@ interface Props {
 }
 const onSubmit = () => {
   // add new card
-  addNewCard({
+  addCard({
     id: Math.random() * 999999999999,
     ...newCard
   })
