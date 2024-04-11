@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, computed } from 'vue'
+import { ref, defineProps, defineEmits, computed, onMounted } from 'vue'
 import useCards from '@/composeables/useCards'
 import useKanbanGroups from '@/composeables/useKanbanGroups'
 import CreateCard from './CreateCard.vue'
@@ -30,6 +30,10 @@ const updateCardGroup = async () => {
   } catch (error) {
     console.error('Error fetching cards:', error)
   }
+}
+
+const addToCardGroup = (updatedCardGroup: Card[]) => {
+ cardGroup
 }
 
 updateCardGroup()
@@ -75,24 +79,40 @@ const onDelete = async () => {
     console.error('props.id is undefined')
   }
 }
+const itemRefs = ref([])
+
+onMounted(() => {
+  // Populate itemRefs with objects containing card group data and component references
+
+
+console.log(itemRefs)
+  // itemRefs.value.forEach(item => {
+  //   watch(cardGroup, (newValue, oldValue) => {
+  //     item.cardGroup = newValue
+  //   })
+  // })
+})
 </script>
 <template>
-  <section class="flex-1 list-none drop-zone">
-    <h3 class=" cursor-pointer" @click="startEditing($event)" @mouseover="showEditIcon = true"
+  <section :id="props.id" class="flex-1 list-none drop-zone">
+
+    <article class=" cursor-pointer" @click="startEditing($event)" @mouseover="showEditIcon = true"
       @mouseleave="showEditIcon = false">
       <span v-if="!isEditing">{{ editedTitle }}</span>
       <input v-model="editedTitle" v-else @keyup.enter="submitEdit()" @blur="submitEdit()" />
       <span v-if="showEditIcon && !isEditing">&#9998;</span>
-    </h3>
+    </article>
     <button class="view-button" @click="onDelete()">
       <span class="icon">&#10006;</span>
     </button>
+
     <div v-if="cardGroup">
-      <DraggableContent v-for="card in cardGroup" :updateCardGroup="updateCardGroup" :key="card.id" :id="card.id"
-        :groupId="card.groupId" :title="card.title" :description="card.description">
-      
+      <DraggableContent v-for="card in cardGroup" :cardGroup="cardGroup" :updateCardGroup="updateCardGroup"
+        ref="itemRefs" :addToCardGroup="addToCardGroup" :key="card.id" :id="card.id" :groupId="card.groupId"
+        :title="card.title" :description="card.description">
+
         <h3>
-          {{ card.title }}   
+          {{ card.title }}
         </h3>
         <p>
           {{ card.description }}
@@ -102,5 +122,6 @@ const onDelete = async () => {
       <CreateCard :groupId="props.id" :cardGroup="cardGroup" :updateCardGroup="updateCardGroup"></CreateCard>
     </div>
     <div v-else>Loading cards...</div>
+
   </section>
 </template>
