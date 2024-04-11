@@ -22,6 +22,7 @@ const currentTitleId = ref<number | undefined>(undefined)
 
 const cardGroup = ref<Card[]>([])
 console.log(cardGroup)
+
 const updateCardGroup = async () => {
   try {
     const cards = await getCardsById(props.id)
@@ -32,6 +33,7 @@ const updateCardGroup = async () => {
 }
 
 updateCardGroup()
+
 const startEditing = async (event: Event) => {
   if (currentTitleId.value !== null) {
     isEditing.value = false
@@ -76,12 +78,8 @@ const onDelete = async () => {
 </script>
 <template>
   <section class="flex-1 list-none drop-zone">
-    <h3
-      class="cursor-pointer"
-      @click="startEditing($event)"
-      @mouseover="showEditIcon = true"
-      @mouseleave="showEditIcon = false"
-    >
+    <h3 class=" cursor-pointer" @click="startEditing($event)" @mouseover="showEditIcon = true"
+      @mouseleave="showEditIcon = false">
       <span v-if="!isEditing">{{ editedTitle }}</span>
       <input v-model="editedTitle" v-else @keyup.enter="submitEdit()" @blur="submitEdit()" />
       <span v-if="showEditIcon && !isEditing">&#9998;</span>
@@ -90,11 +88,18 @@ const onDelete = async () => {
       <span class="icon">&#10006;</span>
     </button>
     <div v-if="cardGroup">
-      <DraggableContent v-for="card in cardGroup" :key="card.id" :data="card">
-        {{ card }}
+      <DraggableContent v-for="card in cardGroup" :updateCardGroup="updateCardGroup" :key="card.id" :id="card.id"
+        :groupId="card.groupId" :title="card.title" :description="card.description">
+      
+        <h3>
+          {{ card.title }}   
+        </h3>
+        <p>
+          {{ card.description }}
+        </p>
       </DraggableContent>
       <p>lol</p>
-      <CreateCard :groupId="props.id"></CreateCard>
+      <CreateCard :groupId="props.id" :cardGroup="cardGroup" :updateCardGroup="updateCardGroup"></CreateCard>
     </div>
     <div v-else>Loading cards...</div>
   </section>

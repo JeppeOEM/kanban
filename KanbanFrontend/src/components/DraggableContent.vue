@@ -1,15 +1,26 @@
 <script setup lang="ts">
+
+import useCards from '@/composeables/useCards'
+
 const props = defineProps<{
-  data: any //
+  id: number,
+  groupId: number,
+  updateCardGroup: Function
 }>()
 
-console.log(props.data, 'llllllllllllllllllllllllllll')
+const { deleteCard } = useCards()
+
+const deleteUpdate = async () => {
+  await deleteCard(props.id)
+  props.updateCardGroup(props.groupId)
+}
+
 const onDragStart = (event: DragEvent) => {
   if (event.dataTransfer) {
     event.dataTransfer.dropEffect = 'move'
     event.dataTransfer.effectAllowed = 'move'
-    event.dataTransfer.setData('data', props.data)
-    console.log(props.data)
+    const propsData = JSON.stringify({id: props.id, groupId: props.groupId})
+    event.dataTransfer.setData('data', propsData)
   }
 }
 
@@ -19,18 +30,21 @@ const onDragOver = (event: DragEvent) => {
 
 const onDrop = (event: DragEvent) => {
   event.preventDefault()
-  const draggedCard = event.dataTransfer?.getData('data')
-  console.log(draggedCard)
+  const data = event.dataTransfer?.getData('data')
+
+  const draggedCard = data ? JSON.parse(data) : null
+
+  console.log(draggedCard.id)
 }
 </script>
 
 <template>
-  <p>DDDDDDDD</p>
-  <!-- <p>looo</p>
+
   <div @drop="onDrop($event)" @dragenter.prevent @dragover.prevent class="drop-zone">
-    <div class="cursor-pointer" draggable="true" @dragstart="onDragStart" :id="props.data.id">
+    <div class="cursor-pointer" draggable="true" @dragstart="onDragStart" :id="props.id" :groupId="props.groupId">
       <h2>lollllllllllllllllllllll</h2>
+      <button @click="deleteUpdate(props.id)" class="delete-btn">&#10006;</button>
       <slot></slot>
     </div>
-  </div> -->
+  </div>
 </template>

@@ -11,8 +11,6 @@ app.use(cors());
 app.use(express.json());
 
 if (!fs.existsSync(dbPath)) {
-  const db = new sqlite3.Database(dbPath);
-
   // Create the groups table
   db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY, title VARCHAR)");
@@ -35,9 +33,9 @@ if (!fs.existsSync(dbPath)) {
 }
 
 app.put("/groups/:id", (req, res) => {
+  const db = new sqlite3.Database(dbPath);
   const { id } = req.params;
   const { title } = req.body;
-  const db = new sqlite3.Database(dbPath);
   db.run("UPDATE groups SET title = ? WHERE id = ?", [title, id], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -49,8 +47,9 @@ app.put("/groups/:id", (req, res) => {
 });
 
 app.delete("/groups/:id", (req, res) => {
-  const { id } = req.params;
   const db = new sqlite3.Database(dbPath);
+  const { id } = req.params;
+
   db.run("DELETE FROM groups WHERE id = ?", [id], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -62,8 +61,9 @@ app.delete("/groups/:id", (req, res) => {
 });
 
 app.post("/groups", (req, res) => {
-  const title = req.body.title;
   const db = new sqlite3.Database(dbPath);
+  const title = req.body.title;
+
   db.run("INSERT INTO groups (title) VALUES (?)", [title], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -89,8 +89,9 @@ app.get("/groups", (req, res) => {
 //CARDS
 
 app.post("/cards", (req, res) => {
-  const { title, description, groupId } = req.body;
   const db = new sqlite3.Database(dbPath);
+  const { title, description, groupId } = req.body;
+
   db.run(
     "INSERT INTO cards (title, description, groupId) VALUES (?, ?, ?)",
     [title, description, groupId],
@@ -118,8 +119,9 @@ app.get("/cards", (req, res) => {
 });
 
 app.get("/cards/:groupId", (req, res) => {
-  const { groupId } = req.params;
   const db = new sqlite3.Database(dbPath);
+  const { groupId } = req.params;
+
   db.all("SELECT * FROM cards WHERE groupId = ?", [groupId], (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -131,9 +133,10 @@ app.get("/cards/:groupId", (req, res) => {
 });
 
 app.put("/cards/:id", (req, res) => {
+  const db = new sqlite3.Database(dbPath);
   const { title, description, groupId } = req.body;
   const { id } = req.params;
-  const db = new sqlite3.Database(dbPath);
+
   db.run(
     "UPDATE cards SET title = ?, description = ?, groupId = ? WHERE id = ?",
     [title, description, groupId, id],
@@ -151,6 +154,7 @@ app.put("/cards/:id", (req, res) => {
 app.delete("/cards/:id", (req, res) => {
   const { id } = req.params;
   const db = new sqlite3.Database(dbPath);
+
   db.run("DELETE FROM cards WHERE id = ?", [id], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });

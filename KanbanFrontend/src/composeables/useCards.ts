@@ -37,14 +37,13 @@ export default () => {
   //   }
   //   cardStore[card.groupId].push(card)
   // }
-
-  // const deleteCard = (cardToDelete: Card) => {
-  //   if (cardStore[cardToDelete.groupId]) {
-  //     cardStore[cardToDelete.groupId] = cardStore[cardToDelete.groupId].filter(
-  //       (card) => card.id !== cardToDelete.id
-  //     )
-  //   }
-  // }
-
-  return { getCardsById, addCard }
+  const deleteCard = async (id: number): Promise<number> => {
+    try {
+      await del(`/cards/${id}`)
+      return id; // Return the ID of the deleted card
+    } catch (err: any) {
+      throw new Error(err.message)
+    }
+  }
+  return { getCardsById, addCard, deleteCard }
 }

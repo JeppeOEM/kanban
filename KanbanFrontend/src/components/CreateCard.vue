@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { CardGroup, type CardDto } from '@/types/CardTypes'
+import { CardGroup, type CardDto,  } from '@/types/CardTypes'
 import useCards from '@/composeables/useCards'
 
 const props = defineProps({
-  groupId: Number
+  groupId: Number,
+ updateCardGroup: Function,
+ cardGroup: Array
 })
 
 const displayForm = ref(false)
@@ -21,13 +23,15 @@ const resetForm = () => {
   ;(displayForm.value = false), (newCard.title = ''), (newCard.description = '')
 }
 
-const onSubmit = () => {
+const onSubmit = async () => {
   console.log(newCard)
   // add new card
-  addCard({
+  await addCard({
     ...newCard
   })
   resetForm()
+  props.updateCardGroup(props.groupId)
+  console.log(props.cardGroup)
 }
 </script>
 
