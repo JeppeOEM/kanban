@@ -2,7 +2,7 @@
 
 import useCards from '@/composeables/useCards'
 import { CardGroup } from '@/types/CardTypes';
-import { onMounted } from 'vue';
+import { onMounted, defineEmits } from 'vue';
 
 const props = defineProps<{
   id: number,
@@ -15,6 +15,8 @@ const props = defineProps<{
 }>()
 
 onMounted(() => console.log(props.cardGroup,"reactive cards"))
+const emit = defineEmits(['update-groups']);
+
 
 const { getCardsById, deleteCard, addCard } = useCards()
 
@@ -38,25 +40,30 @@ const onDragOver = (event: DragEvent) => {
   event.preventDefault()
 }
 
-const onDrop = (event: DragEvent,id: number) => {
+const onDrop = async (event: DragEvent, id: number) => {
   event.preventDefault()
   const data = event.dataTransfer?.getData('data')
 
   const draggedCard = data ? JSON.parse(data) : null
-  console.log("box",id)
-  console.log(data)
+
+  console.log(draggedCard.groupId)
   console.log(props.cardGroup[0].groupId,"destinatio id")
-  deleteCard(draggedCard.id)
-  const { cardId, ...cardData } = draggedCard
-  cardData.groupId = id
-  addCard(draggedCard)
+  await deleteCard(draggedCard.id)
+  draggedCard.groupId = id
+
+  await addCard(draggedCard)
+  await props.updateCardGroup(id)
+  await props.updateCardGroup(props.cardGroup[0].groupId)
+
+  emit('update-groups', {from: id, to: props.groupId});
+
 
 }
 </script>
 
 <template>
 
-  <div @drop="onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent class="drop-zone">
+  <div  @drop="onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent class="drop-zone">
     <div class="cursor-pointer" draggable="true"  @dragstart="onDragStart" :id="props.id" :groupId="props.groupId">
       <h2>lollllllllllllllllllllll</h2>
       <button @click="deleteUpdate()" class="delete-btn">&#10006;</button>

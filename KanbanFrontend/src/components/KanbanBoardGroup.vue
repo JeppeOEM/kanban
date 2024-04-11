@@ -94,7 +94,7 @@ console.log(itemRefs)
 })
 </script>
 <template>
-  <section :id="props.id" class="flex-1 list-none drop-zone">
+  <section :id="props.id" class="flex-1 list-none drop-zone min-h-20 min-w-20">
 
     <article class=" cursor-pointer" @click="startEditing($event)" @mouseover="showEditIcon = true"
       @mouseleave="showEditIcon = false">

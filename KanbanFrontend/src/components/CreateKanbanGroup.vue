@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue'
-import { KanbanGroup } from '@/types/KanbanGroupTypes'
 import useKanbanGroups from '@/composeables/useKanbanGroups'
 
 

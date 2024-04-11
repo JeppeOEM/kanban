@@ -143,6 +143,7 @@ app.put("/cards/:id", (req, res) => {
 
 app.delete("/cards/:id", (req, res) => {
   const { id } = req.params;
+  console.log(id);
   db.run("DELETE FROM cards WHERE id = ?", [id], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
