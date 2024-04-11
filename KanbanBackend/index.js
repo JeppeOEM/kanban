@@ -4,21 +4,23 @@ const fs = require("fs");
 const cors = require("cors");
 const app = express();
 const port = 3000;
-const dbPath = "./mydb.db";
+const dbPath = "./db.db";
 
-//enable all cors for testing
 app.use(cors());
 app.use(express.json());
+const db = new sqlite3.Database(dbPath);
 
-if (!fs.existsSync(dbPath)) {
-  // Create the groups table
-  db.serialize(() => {
-    db.run("CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY, title VARCHAR)");
-    db.run(
-      "CREATE TABLE IF NOT EXISTS cards (id INTEGER PRIMARY KEY, title VARCHAR, description TEXT, groupId INTEGER, FOREIGN KEY(groupId) REFERENCES groups(id) ON DELETE CASCADE)"
-    );
+// Read and execute SQL commands from the file
+const sqlFile = "./sql.sql";
+const sqlCommands = fs.readFileSync(sqlFile, "utf8");
 
-    // Insert default groups
+db.serialize(() => {
+  db.exec(sqlCommands, (err) => {
+    if (err) {
+      console.error("Error executing SQL commands:", err.message);
+      return;
+    }
+
     const defaultgroups = ["Team Resources", "To Do", "Doing", "Done", "Additional Questions"];
     const insertListQuery = db.prepare("INSERT INTO groups (title) VALUES (?)");
 
@@ -27,10 +29,12 @@ if (!fs.existsSync(dbPath)) {
     });
 
     insertListQuery.finalize();
-  });
 
-  db.close();
-}
+    console.log("Database setup complete.");
+  });
+});
+
+db.close();
 
 app.put("/groups/:id", (req, res) => {
   const db = new sqlite3.Database(dbPath);
@@ -42,8 +46,8 @@ app.put("/groups/:id", (req, res) => {
       return;
     }
     res.json({ message: `List with id ${id} updated successfully` });
+    db.close();
   });
-  db.close();
 });
 
 app.delete("/groups/:id", (req, res) => {
@@ -56,8 +60,8 @@ app.delete("/groups/:id", (req, res) => {
       return;
     }
     res.json({ message: `List with id ${id} deleted successfully` });
+    db.close();
   });
-  db.close();
 });
 
 app.post("/groups", (req, res) => {
@@ -70,8 +74,8 @@ app.post("/groups", (req, res) => {
       return;
     }
     res.json({ id: this.lastID, title: title });
+    db.close();
   });
-  db.close();
 });
 
 app.get("/groups", (req, res) => {
@@ -82,8 +86,8 @@ app.get("/groups", (req, res) => {
       return;
     }
     res.json(rows);
+    db.close();
   });
-  db.close();
 });
 
 //CARDS
@@ -101,9 +105,9 @@ app.post("/cards", (req, res) => {
         return;
       }
       res.json({ id: this.lastID });
+      db.close();
     }
   );
-  db.close();
 });
 
 app.get("/cards", (req, res) => {
@@ -114,8 +118,8 @@ app.get("/cards", (req, res) => {
       return;
     }
     res.json(rows);
+    db.close();
   });
-  db.close();
 });
 
 app.get("/cards/:groupId", (req, res) => {
@@ -128,8 +132,8 @@ app.get("/cards/:groupId", (req, res) => {
       return;
     }
     res.json(rows);
+    db.close();
   });
-  db.close();
 });
 
 app.put("/cards/:id", (req, res) => {
@@ -146,9 +150,9 @@ app.put("/cards/:id", (req, res) => {
         return;
       }
       res.json({ message: `Card with id ${id} updated successfully` });
+      db.close();
     }
   );
-  db.close();
 });
 
 app.delete("/cards/:id", (req, res) => {
@@ -161,8 +165,8 @@ app.delete("/cards/:id", (req, res) => {
       return;
     }
     res.json({ message: `Card with id ${id} deleted successfully` });
+    db.close();
   });
-  db.close();
 });
 
 app.listen(port, () => {

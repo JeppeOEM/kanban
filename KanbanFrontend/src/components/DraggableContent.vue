@@ -43,7 +43,7 @@ const onDrop = (event: DragEvent) => {
   <div @drop="onDrop($event)" @dragenter.prevent @dragover.prevent class="drop-zone">
     <div class="cursor-pointer" draggable="true" @dragstart="onDragStart" :id="props.id" :groupId="props.groupId">
       <h2>lollllllllllllllllllllll</h2>
-      <button @click="deleteUpdate(props.id)" class="delete-btn">&#10006;</button>
+      <button @click="deleteUpdate()" class="delete-btn">&#10006;</button>
       <slot></slot>
     </div>
   </div>

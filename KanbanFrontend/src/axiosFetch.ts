@@ -15,6 +15,7 @@ export const get = async <T>(url: string): Promise<T> => {
 
 export const post = async <T>(url: string, data: any): Promise<T> => {
   try {
+    console.log(data)
     const response = await axiosInstance.post<T>(url, data)
     return response.data
   } catch (error: any) {
