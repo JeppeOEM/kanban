@@ -8,7 +8,6 @@ import { loadKanbanGroups} from '@/globalState'
 
 const props = defineProps({
   groupId: Number,
-
 })
 
 const displayForm = ref(false)
@@ -31,7 +30,7 @@ const onSubmit = async () => {
     ...newCard
   })
   resetForm()
-  await loadKanbanGroups()
+  loadKanbanGroups()
 
 }
 </script>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineProps, watch } from 'vue'
+import { ref, watch } from 'vue'
 import useKanbanGroups from '@/composeables/useKanbanGroups'
 import CreateCard from './CreateCard.vue'
 import DraggableContent from './DraggableContent.vue'

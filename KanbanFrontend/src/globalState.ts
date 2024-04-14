@@ -18,8 +18,8 @@ export const loadKanbanGroups = async () => {
   const { getCardsById } = useCards()
   const data = await getKanbanGroups()
 
-  for (const obj of data) {
-    obj.cards = await getCardsById(obj.id)
+  for (const group of data) {
+    group.cards = await getCardsById(group.id)
   }
 
   kanbanData.value = data
