@@ -5,6 +5,7 @@ import CreateCard from './CreateCard.vue'
 import DraggableContent from './DraggableContent.vue'
 import type { Card } from '@/types/CardTypes'
 import { loadKanbanGroups } from '@/globalState'
+import useCards from '@/composeables/useCards'
 
 const props = defineProps({
   groupId: Number,
@@ -12,7 +13,7 @@ const props = defineProps({
   cards: Array
 })
 
-
+const { updateCard} = useCards()
 const { deleteKanbanGroup, updateKanbanGroup } = useKanbanGroups()
 
 const editedTitle = ref(props.title)
@@ -67,6 +68,25 @@ const onDelete = async () => {
   }
 }
 
+const onDrop = async (event: DragEvent, id: Number) => {
+  event.preventDefault();
+  const data = event.dataTransfer?.getData('data');
+  if (!data) return;
+  const draggedCard = JSON.parse(data);
+  draggedCard.groupId = id;
+  await updateCard(draggedCard.id, draggedCard)
+  loadKanbanGroups()
+
+};
+
+
+const onDropInParent = (event: DragEvent) => {
+  event.preventDefault();
+  const data = event.dataTransfer?.getData('data');
+  if (!data) return;
+  const draggedCard = JSON.parse(data);
+  // Handle drop event in the parent component
+}
 
 watch(() => props.cards, (newValue, oldValue) => {
   cardGroup.value = newValue
@@ -75,7 +95,7 @@ watch(() => props.cards, (newValue, oldValue) => {
 
 </script>
 <template>
-  <section class="flex-1 list-none drop-zone min-h-20 min-w-20">
+  <section @drop="onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent class="flex-1 list-none drop-zone min-h-20 min-w-20">
     <article class=" cursor-pointer" @click="startEditing($event)" @mouseover="showEditIcon = true"
       @mouseleave="showEditIcon = false">
       <span v-if="!isEditing">{{ editedTitle }}</span>
@@ -87,13 +107,14 @@ watch(() => props.cards, (newValue, oldValue) => {
     </button>
 
     <div v-if="cardGroup">
-      <DraggableContent v-for="card in cardGroup" 
+      <DraggableContent  v-for="card in cardGroup" 
         :cardGroup="cardGroup" 
-        :key="card.id" 
+        :key="String(card.id)" 
         :id="card.id" 
         :groupId="card.groupId" 
         :title="card.title"
-        :description="card.description">
+        :description="card.description"
+        :onDrop ="onDrop">
         
         <h3>
           {{ card.title }}
@@ -102,8 +123,6 @@ watch(() => props.cards, (newValue, oldValue) => {
           {{ card.description }}
         </p>
       </DraggableContent>
-      <p>lol</p>
-
       <CreateCard :groupId="props.groupId"></CreateCard>
     </div>
     <div v-else>Loading cards...</div>

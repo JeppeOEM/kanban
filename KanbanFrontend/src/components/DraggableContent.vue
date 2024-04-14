@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import useCards from '@/composeables/useCards'
-import { onMounted } from 'vue';
 import { loadKanbanGroups} from '@/globalState'
 
 
@@ -11,12 +10,13 @@ const props = defineProps<{
   title: string,
   description: string,
   cardGroup: any
+  onDrop: Function
 }>()
 
-onMounted(() => console.log(props.cardGroup,"reactive cards"))
 
 
-const { updateCard, deleteCard} = useCards()
+
+const { deleteCard} = useCards()
 
 const deleteUpdate = async () => {
   await deleteCard(props.id)
@@ -39,21 +39,11 @@ const onDragOver = (event: DragEvent) => {
 }
 
 
-const onDrop = async (event: DragEvent, id: Number) => {
-  event.preventDefault();
-  const data = event.dataTransfer?.getData('data');
-  if (!data) return;
-  const draggedCard = JSON.parse(data);
-  draggedCard.groupId = id;
-  await updateCard(draggedCard.id, draggedCard)
-  loadKanbanGroups()
-
-};
 </script>
 
 <template>
 
-  <div  @drop="onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent class="drop-zone">
+ <div @drop="props.onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent class="drop-zone min-h-[100px] min-w-[100px] bg-slate-400 rounded-md">
     <div class="cursor-pointer" draggable="true"  @dragstart="onDragStart" :id="String(props.id)" :groupId="props.groupId">
       <button @click="deleteUpdate()" class="delete-btn">&#10006;</button>
       <slot></slot>
