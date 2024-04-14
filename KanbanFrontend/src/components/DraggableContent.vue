@@ -3,6 +3,7 @@
 import useCards from '@/composeables/useCards'
 import { CardGroup } from '@/types/CardTypes';
 import { onMounted, defineEmits } from 'vue';
+import { addGlobalGroup, cardGroups, getCardGroupRef, updateGroupsRef } from '@/globalState'
 
 const props = defineProps<{
   id: Number,
@@ -49,6 +50,7 @@ const onDrop = async (event: DragEvent, id: Number) => {
   let originalGroupId = draggedCard.groupId;
   draggedCard.groupId = id;
   await updateCard(draggedCard.id, draggedCard)
+  updateGroupsRef(originalGroupId, draggedCard.groupId, draggedCard.id)
 
   console.log(id, originalGroupId)
 

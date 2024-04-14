@@ -24,14 +24,14 @@ const resetForm = () => {
 }
 
 const onSubmit = async () => {
-  console.log(newCard)
+
   // add new card
   await addCard({
     ...newCard
   })
   resetForm()
   props.updateCardGroup(props.groupId)
-  console.log(props.cardGroup)
+
 }
 </script>
 

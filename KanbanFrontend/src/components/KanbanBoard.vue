@@ -12,13 +12,12 @@ onMounted(async () => {
   const { getKanbanGroups } = useKanbanGroups()
   const data = await getKanbanGroups()
   kanbanData.value = data
-  console.log(kanbanData.value, 'DATA')
-  console.log(data, 'DATA here')
+
 })
 
 const handleNewGroup = async (group: KanbanGroup) => {
   kanbanData.value.push(group)
-  console.log(kanbanData.value)
+
 }
 
 const handleDeleteGroup = async (groupId: KanbanGroup) => {
@@ -28,12 +27,37 @@ const handleDeleteGroup = async (groupId: KanbanGroup) => {
   }
   console.log(kanbanData.value)
 }
+
+const handleUpdateGroups = async (data: any) => {
+  console.log("HIIIIIIIT")
+  const { from, to, cardId } = data;
+  const updatedFromGroup = kanbanData.value.find((group: any) => group.id === from);
+  const updatedToGroup = kanbanData.value.find((group: any) => group.id === to);
+
+  if (updatedFromGroup && updatedToGroup) {
+    const fromIndex = kanbanData.value.findIndex((group: any) => group.id === from);
+    const toIndex = kanbanData.value.findIndex((group: any) => group.id === to);
+
+    if (fromIndex !== -1) {
+      kanbanData.value[fromIndex] = updatedFromGroup;
+    }
+
+    if (toIndex !== -1) {
+      kanbanData.value[toIndex] = updatedToGroup;
+    }
+  }
+
+  const { getKanbanGroups } = useKanbanGroups()
+  const D = await getKanbanGroups()
+  kanbanData.value = D
+};
+
 </script>
 
 <template>
   <div class="flex justify-around gap-5">
     <KanbanBoardGroup v-for="board in kanbanData" :key="board.id" :title="board.title" :groupId="board.id"
-      @delete-group="handleDeleteGroup" />
+      @delete-group="handleDeleteGroup" @update-groups="handleUpdateGroups" />
     <CreateKanbanGroup @new-group="handleNewGroup"></CreateKanbanGroup>
   </div>
 </template>

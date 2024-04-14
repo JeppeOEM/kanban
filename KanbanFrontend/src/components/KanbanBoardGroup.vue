@@ -5,7 +5,7 @@ import useKanbanGroups from '@/composeables/useKanbanGroups'
 import CreateCard from './CreateCard.vue'
 import DraggableContent from './DraggableContent.vue'
 import type { Card } from '@/types/CardTypes'
-import { addGlobalGroup, cardGroups, getCardGroupRef } from '@/globalState'
+import { addGlobalGroup, cardGroups, getCardGroupRef, updateGroupsRef } from '@/globalState'
 
 const props = defineProps({
   groupId: Number,
@@ -22,14 +22,7 @@ const currentTitleId = ref<Number | undefined>(undefined)
 
 
 const cardGroup = ref<Card[]>([])
-// if (props.groupId !== undefined ) {
-//   await addGlobalGroup(props.groupId, cardGroup)
-//   let test = await getCardGroupRef(props.groupId)
-//   console.log
-// } else {
-//   console.log( getCardGroupRef(props.groupId),"GG")
-//   console.error('props.groupId is not provided')
-// }
+
 
 const updateCardGroup = async (groupId?: number) => {
   const groupIdToUpdate = groupId !== undefined ? groupId : props.groupId;
@@ -95,55 +88,36 @@ const onDelete = async () => {
   }
 }
 
-watchEffect(async () =>  {
-  // Code inside this callback will be executed whenever the value of cardGroup changes
+// watchEffect(async () =>  {
+// //excute this when groupRef gets a new value
+//   const groupRef = cardGroup.value;
 
-  const groupRef = cardGroup.value;
+//   if (groupRef && Object.keys(groupRef).length > 0) {
+//     if (props.groupId !== undefined ) {
+//       await addGlobalGroup(props.groupId, cardGroup)
+//       await getCardGroupRef(props.groupId)
+//     } else {
 
-  if (groupRef && Object.keys(groupRef).length > 0) {
-    if (props.groupId !== undefined ) {
-      await addGlobalGroup(props.groupId, cardGroup)
-      let test = await getCardGroupRef(props.groupId)
-      console.log(test)
-    } else {
+//       console.error('props.groupId is not provided')
+//     }
+//   }
+// });
 
-      console.error('props.groupId is not provided')
-    }
-  }
-});
-
-const updateGroups = (data: any) =>{
-console.log(data.from,"TEEEEEEST")
-  updateCardGroup(data.from)
-  updateCardGroup(data.to)
-
+const updateGroups = async (data: any) => {
+  console.log(data.from, data.to, data.cardId, "UPDATE GROUPS")
+  emit('update-groups', data); // Emit custom event to parent
+  //await updateGroupsRef(data.from, data.to, data.cardId);
+  // Reload all card groups after updating
+  //await reloadAllCardGroups();
 }
-const inputInteger = ref<number | null>(null)
 
-// Method to handle submission
-const handleSubmit = () => {
-  // Check if inputInteger is not null and is a valid integer
-  if (Number.isInteger(inputInteger.value)) {
-    // Call your function with the integer value
-    updateCardGroup(inputInteger.value)
-  } else {
-    // Handle invalid input
-    console.error("Please enter a valid integer.")
+const reloadAllCardGroups = async () => {
+  // Loop through each group and update it
+  for (const groupId of Object.keys(cardGroups.value)) {
+    await updateCardGroup(Number(groupId));
   }
-
-  watch(
-    () => cardGroup.value, // Watch the value of cardGroup
-    (newValue, oldValue) => {
-      if (newValue) {
-        // Run your function when cardGroup becomes truthy
-        console.log("OLOLOL")
-      }
-    }
-  )
-    
-
-
 }
+
 
 </script>
 <template>
@@ -158,10 +132,7 @@ const handleSubmit = () => {
     <button class="view-button" @click="onDelete()">
       <span class="icon">&#10006;</span>
     </button>
-    <input type="number" v-model="inputInteger">
 
-    <!-- Button to submit -->
-    <button @click="handleSubmit">Submit</button>
     <div v-if="cardGroup">
       <DraggableContent v-for="card in cardGroup" :cardGroup="cardGroup" @update-groups="updateGroups"
         :addToCardGroup="addToCardGroup" :key="card.id" :id="card.id" :groupId="card.groupId" :title="card.title"
