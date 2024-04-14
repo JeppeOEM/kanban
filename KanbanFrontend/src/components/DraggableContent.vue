@@ -5,8 +5,8 @@ import { CardGroup } from '@/types/CardTypes';
 import { onMounted, defineEmits } from 'vue';
 
 const props = defineProps<{
-  id: number,
-  groupId: number,
+  id: Number,
+  groupId: Number,
   title: string,
   description: string,
   updateCardGroup: Function,
@@ -18,7 +18,7 @@ onMounted(() => console.log(props.cardGroup,"reactive cards"))
 const emit = defineEmits(['update-groups']);
 
 
-const { getCardsById, deleteCard, addCard } = useCards()
+const { updateCard, deleteCard, addCard } = useCards()
 
 const deleteUpdate = async () => {
   await deleteCard(props.id)
@@ -40,25 +40,21 @@ const onDragOver = (event: DragEvent) => {
   event.preventDefault()
 }
 
-const onDrop = async (event: DragEvent, id: number) => {
-  event.preventDefault()
-  const data = event.dataTransfer?.getData('data')
 
-  const draggedCard = data ? JSON.parse(data) : null
+const onDrop = async (event: DragEvent, id: Number) => {
+  event.preventDefault();
+  const data = event.dataTransfer?.getData('data');
+  if (!data) return;
+  const draggedCard = JSON.parse(data);
+  let originalGroupId = draggedCard.groupId;
+  draggedCard.groupId = id;
+  await updateCard(draggedCard.id, draggedCard)
 
-  console.log(draggedCard.groupId)
-  console.log(props.cardGroup[0].groupId,"destinatio id")
-  await deleteCard(draggedCard.id)
-  draggedCard.groupId = id
-
-  await addCard(draggedCard)
-  await props.updateCardGroup(id)
-  await props.updateCardGroup(props.cardGroup[0].groupId)
-
-  emit('update-groups', {from: id, to: props.groupId});
+  console.log(id, originalGroupId)
 
 
-}
+  emit('update-groups', { from: originalGroupId, to: draggedCard.groupId, cardId: draggedCard.id });
+};
 </script>
 
 <template>

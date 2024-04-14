@@ -7,14 +7,14 @@ export enum CardGroup {
 }
 
 export interface Card {
-  id: number
+  id: Number
   title: string
   description: string
-  groupId: number
+  groupId: Number
 }
 
 export interface CardDto {
   title: string
   description: string
-  groupId: number
+  groupId: Number
 }

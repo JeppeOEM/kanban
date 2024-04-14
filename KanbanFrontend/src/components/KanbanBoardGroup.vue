@@ -1,36 +1,51 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, computed, onMounted } from 'vue'
+import { ref, defineProps, defineEmits, computed, onMounted, watch, watchEffect } from 'vue'
 import useCards from '@/composeables/useCards'
 import useKanbanGroups from '@/composeables/useKanbanGroups'
 import CreateCard from './CreateCard.vue'
 import DraggableContent from './DraggableContent.vue'
 import type { Card } from '@/types/CardTypes'
-
+import { addGlobalGroup, cardGroups, getCardGroupRef } from '@/globalState'
 
 const props = defineProps({
-  id: Number,
+  groupId: Number,
   title: String
 })
 
 const { getCardsById } = useCards()
 const { deleteKanbanGroup, updateKanbanGroup } = useKanbanGroups()
-const emit = defineEmits(['delete-group'])
+const emit = defineEmits(['delete-group, update-groups'])
 const editedTitle = ref(props.title)
 const showEditIcon = ref(false)
 const isEditing = ref(false)
-const currentTitleId = ref<number | undefined>(undefined)
+const currentTitleId = ref<Number | undefined>(undefined)
+
 
 const cardGroup = ref<Card[]>([])
-console.log(cardGroup)
+// if (props.groupId !== undefined ) {
+//   await addGlobalGroup(props.groupId, cardGroup)
+//   let test = await getCardGroupRef(props.groupId)
+//   console.log
+// } else {
+//   console.log( getCardGroupRef(props.groupId),"GG")
+//   console.error('props.groupId is not provided')
+// }
 
-const updateCardGroup = async () => {
+const updateCardGroup = async (groupId?: number) => {
+  const groupIdToUpdate = groupId !== undefined ? groupId : props.groupId;
+
   try {
-    const cards = await getCardsById(props.id)
-    cardGroup.value = cards
+    if (groupIdToUpdate === undefined) {
+      console.error("Group ID is undefined");
+      return;
+    }
+
+    const cards = await getCardsById(groupIdToUpdate);
+    cardGroup.value = cards;
   } catch (error) {
-    console.error('Error fetching cards:', error)
+    console.error("Error fetching cards:", error);
   }
-}
+};
 
 const addToCardGroup = (updatedCardGroup: Card[]) => {
  cardGroup
@@ -43,7 +58,7 @@ const startEditing = async (event: Event) => {
     isEditing.value = false
   }
   isEditing.value = true
-  currentTitleId.value = props.id
+  currentTitleId.value = props.groupId
   const target = event.target
 
   if (target !== null) {
@@ -54,9 +69,9 @@ const startEditing = async (event: Event) => {
 }
 
 const submitEdit = async () => {
-  if (editedTitle.value !== undefined && props.id !== undefined) {
+  if (editedTitle.value !== undefined && props.groupId !== undefined) {
     try {
-      let group = { id: props.id, title: editedTitle.value }
+      let group = { id: props.groupId, title: editedTitle.value }
       await updateKanbanGroup(group)
       isEditing.value = false
     } catch (error) {
@@ -68,33 +83,71 @@ const submitEdit = async () => {
 }
 
 const onDelete = async () => {
-  if (props.id !== undefined) {
+  if (props.groupId !== undefined) {
     try {
-      await deleteKanbanGroup(props.id)
-      emit('delete-group', props.id)
+      await deleteKanbanGroup(props.groupId)
+      emit('delete-group', props.groupId)
     } catch (error) {
       console.error('Error deleting group:', error)
     }
   } else {
-    console.error('props.id is undefined')
+    console.error('props.groupId is undefined')
   }
 }
-const itemRefs = ref([])
 
-onMounted(() => {
-  // Populate itemRefs with objects containing card group data and component references
+watchEffect(async () =>  {
+  // Code inside this callback will be executed whenever the value of cardGroup changes
+
+  const groupRef = cardGroup.value;
+
+  if (groupRef && Object.keys(groupRef).length > 0) {
+    if (props.groupId !== undefined ) {
+      await addGlobalGroup(props.groupId, cardGroup)
+      let test = await getCardGroupRef(props.groupId)
+      console.log(test)
+    } else {
+
+      console.error('props.groupId is not provided')
+    }
+  }
+});
+
+const updateGroups = (data: any) =>{
+console.log(data.from,"TEEEEEEST")
+  updateCardGroup(data.from)
+  updateCardGroup(data.to)
+
+}
+const inputInteger = ref<number | null>(null)
+
+// Method to handle submission
+const handleSubmit = () => {
+  // Check if inputInteger is not null and is a valid integer
+  if (Number.isInteger(inputInteger.value)) {
+    // Call your function with the integer value
+    updateCardGroup(inputInteger.value)
+  } else {
+    // Handle invalid input
+    console.error("Please enter a valid integer.")
+  }
+
+  watch(
+    () => cardGroup.value, // Watch the value of cardGroup
+    (newValue, oldValue) => {
+      if (newValue) {
+        // Run your function when cardGroup becomes truthy
+        console.log("OLOLOL")
+      }
+    }
+  )
+    
 
 
-console.log(itemRefs)
-  // itemRefs.value.forEach(item => {
-  //   watch(cardGroup, (newValue, oldValue) => {
-  //     item.cardGroup = newValue
-  //   })
-  // })
-})
+}
+
 </script>
 <template>
-  <section :id="props.id" class="flex-1 list-none drop-zone min-h-20 min-w-20">
+  <section :id="props.groupId" class="flex-1 list-none drop-zone min-h-20 min-w-20">
 
     <article class=" cursor-pointer" @click="startEditing($event)" @mouseover="showEditIcon = true"
       @mouseleave="showEditIcon = false">
@@ -105,11 +158,14 @@ console.log(itemRefs)
     <button class="view-button" @click="onDelete()">
       <span class="icon">&#10006;</span>
     </button>
+    <input type="number" v-model="inputInteger">
 
+    <!-- Button to submit -->
+    <button @click="handleSubmit">Submit</button>
     <div v-if="cardGroup">
-      <DraggableContent v-for="card in cardGroup" :cardGroup="cardGroup" :updateCardGroup="updateCardGroup"
-        ref="itemRefs" :addToCardGroup="addToCardGroup" :key="card.id" :id="card.id" :groupId="card.groupId"
-        :title="card.title" :description="card.description">
+      <DraggableContent v-for="card in cardGroup" :cardGroup="cardGroup" @update-groups="updateGroups"
+        :addToCardGroup="addToCardGroup" :key="card.id" :id="card.id" :groupId="card.groupId" :title="card.title"
+        :description="card.description">
 
         <h3>
           {{ card.title }}
@@ -119,7 +175,8 @@ console.log(itemRefs)
         </p>
       </DraggableContent>
       <p>lol</p>
-      <CreateCard :groupId="props.id" :cardGroup="cardGroup" :updateCardGroup="updateCardGroup"></CreateCard>
+
+      <CreateCard :groupId="props.groupId" :cardGroup="cardGroup" :updateCardGroup="updateCardGroup"></CreateCard>
     </div>
     <div v-else>Loading cards...</div>
 

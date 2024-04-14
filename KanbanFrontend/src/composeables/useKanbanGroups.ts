@@ -20,7 +20,7 @@ export default () => {
     }
   }
 
-  const deleteKanbanGroup = async (id: number): Promise<void> => {
+  const deleteKanbanGroup = async (id: Number): Promise<void> => {
     try {
       await del(`/groups/${id}`)
     } catch (err: any) {

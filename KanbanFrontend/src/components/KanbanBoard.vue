@@ -32,7 +32,7 @@ const handleDeleteGroup = async (groupId: KanbanGroup) => {
 
 <template>
   <div class="flex justify-around gap-5">
-    <KanbanBoardGroup v-for="board in kanbanData" :key="board.id" :title="board.title" :id="board.id"
+    <KanbanBoardGroup v-for="board in kanbanData" :key="board.id" :title="board.title" :groupId="board.id"
       @delete-group="handleDeleteGroup" />
     <CreateKanbanGroup @new-group="handleNewGroup"></CreateKanbanGroup>
   </div>

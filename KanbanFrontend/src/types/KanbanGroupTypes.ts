@@ -1,4 +1,4 @@
 export interface KanbanGroup {
-  id: number
+  id: Number
   title: string
 }

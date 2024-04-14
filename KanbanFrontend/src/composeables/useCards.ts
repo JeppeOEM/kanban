@@ -31,12 +31,19 @@ export default () => {
     }
   }
 
-  // const addCard = (card: CardDto) => {
-  //   if (!cardStore[card.groupId]) {
-  //     cardStore[card.groupId] = []
-  //   }
-  //   cardStore[card.groupId].push(card)
-  // }
+  const updateCard = async (id: number, updatedCardData: Card): Promise<Card> => {
+    try {
+      const updatedCard = await put<Card>(`/cards/${id}`, updatedCardData)
+      return {
+        id: updatedCard.id,
+        title: updatedCard.title,
+        description: updatedCard.description,
+        groupId: updatedCard.groupId
+      }
+    } catch (err: any) {
+      throw new Error(err.message)
+    }
+  }
   const deleteCard = async (id: number): Promise<number> => {
     try {
       await del(`/cards/${id}`)
@@ -45,5 +52,5 @@ export default () => {
       throw new Error(err.message)
     }
   }
-  return { getCardsById, addCard, deleteCard }
+  return { getCardsById, addCard, deleteCard, updateCard }
 }
