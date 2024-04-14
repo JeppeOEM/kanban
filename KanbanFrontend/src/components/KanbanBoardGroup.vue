@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, computed, onMounted, watch, watchEffect } from 'vue'
-import useCards from '@/composeables/useCards'
+import { ref, defineProps, watch } from 'vue'
 import useKanbanGroups from '@/composeables/useKanbanGroups'
 import CreateCard from './CreateCard.vue'
 import DraggableContent from './DraggableContent.vue'
 import type { Card } from '@/types/CardTypes'
-import { addGlobalGroup, cardGroups, getCardGroupRef, updateGroupsRef } from '@/globalState'
+import { loadKanbanGroups } from '@/globalState'
 
 const props = defineProps({
   groupId: Number,
-  title: String
+  title: String,
+  cards: Array
 })
 
-const { getCardsById } = useCards()
+
 const { deleteKanbanGroup, updateKanbanGroup } = useKanbanGroups()
-const emit = defineEmits(['delete-group, update-groups'])
+
 const editedTitle = ref(props.title)
 const showEditIcon = ref(false)
 const isEditing = ref(false)
@@ -22,29 +22,8 @@ const currentTitleId = ref<Number | undefined>(undefined)
 
 
 const cardGroup = ref<Card[]>([])
+cardGroup.value = props.cards
 
-
-const updateCardGroup = async (groupId?: number) => {
-  const groupIdToUpdate = groupId !== undefined ? groupId : props.groupId;
-
-  try {
-    if (groupIdToUpdate === undefined) {
-      console.error("Group ID is undefined");
-      return;
-    }
-
-    const cards = await getCardsById(groupIdToUpdate);
-    cardGroup.value = cards;
-  } catch (error) {
-    console.error("Error fetching cards:", error);
-  }
-};
-
-const addToCardGroup = (updatedCardGroup: Card[]) => {
- cardGroup
-}
-
-updateCardGroup()
 
 const startEditing = async (event: Event) => {
   if (currentTitleId.value !== null) {
@@ -55,9 +34,9 @@ const startEditing = async (event: Event) => {
   const target = event.target
 
   if (target !== null) {
-    let h3 = await target.closest('h3')
-    let input = h3.querySelector('input')
-    input.focus()
+    // let h3 = await target.closest('h3')
+    // let input = h3.querySelector('input')
+    // input.focus()
   }
 }
 
@@ -79,7 +58,7 @@ const onDelete = async () => {
   if (props.groupId !== undefined) {
     try {
       await deleteKanbanGroup(props.groupId)
-      emit('delete-group', props.groupId)
+      await loadKanbanGroups()
     } catch (error) {
       console.error('Error deleting group:', error)
     }
@@ -88,41 +67,15 @@ const onDelete = async () => {
   }
 }
 
-// watchEffect(async () =>  {
-// //excute this when groupRef gets a new value
-//   const groupRef = cardGroup.value;
 
-//   if (groupRef && Object.keys(groupRef).length > 0) {
-//     if (props.groupId !== undefined ) {
-//       await addGlobalGroup(props.groupId, cardGroup)
-//       await getCardGroupRef(props.groupId)
-//     } else {
-
-//       console.error('props.groupId is not provided')
-//     }
-//   }
-// });
-
-const updateGroups = async (data: any) => {
-  console.log(data.from, data.to, data.cardId, "UPDATE GROUPS")
-  emit('update-groups', data); // Emit custom event to parent
-  //await updateGroupsRef(data.from, data.to, data.cardId);
-  // Reload all card groups after updating
-  //await reloadAllCardGroups();
-}
-
-const reloadAllCardGroups = async () => {
-  // Loop through each group and update it
-  for (const groupId of Object.keys(cardGroups.value)) {
-    await updateCardGroup(Number(groupId));
-  }
-}
+watch(() => props.cards, (newValue, oldValue) => {
+  cardGroup.value = newValue
+})
 
 
 </script>
 <template>
-  <section :id="props.groupId" class="flex-1 list-none drop-zone min-h-20 min-w-20">
-
+  <section class="flex-1 list-none drop-zone min-h-20 min-w-20">
     <article class=" cursor-pointer" @click="startEditing($event)" @mouseover="showEditIcon = true"
       @mouseleave="showEditIcon = false">
       <span v-if="!isEditing">{{ editedTitle }}</span>
@@ -134,10 +87,14 @@ const reloadAllCardGroups = async () => {
     </button>
 
     <div v-if="cardGroup">
-      <DraggableContent v-for="card in cardGroup" :cardGroup="cardGroup" @update-groups="updateGroups"
-        :addToCardGroup="addToCardGroup" :key="card.id" :id="card.id" :groupId="card.groupId" :title="card.title"
+      <DraggableContent v-for="card in cardGroup" 
+        :cardGroup="cardGroup" 
+        :key="card.id" 
+        :id="card.id" 
+        :groupId="card.groupId" 
+        :title="card.title"
         :description="card.description">
-
+        
         <h3>
           {{ card.title }}
         </h3>
@@ -147,7 +104,7 @@ const reloadAllCardGroups = async () => {
       </DraggableContent>
       <p>lol</p>
 
-      <CreateCard :groupId="props.groupId" :cardGroup="cardGroup" :updateCardGroup="updateCardGroup"></CreateCard>
+      <CreateCard :groupId="props.groupId"></CreateCard>
     </div>
     <div v-else>Loading cards...</div>
 

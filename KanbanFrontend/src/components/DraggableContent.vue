@@ -1,29 +1,26 @@
 <script setup lang="ts">
 
 import useCards from '@/composeables/useCards'
-import { CardGroup } from '@/types/CardTypes';
-import { onMounted, defineEmits } from 'vue';
-import { addGlobalGroup, cardGroups, getCardGroupRef, updateGroupsRef } from '@/globalState'
+import { onMounted } from 'vue';
+import { loadKanbanGroups} from '@/globalState'
+
 
 const props = defineProps<{
-  id: Number,
-  groupId: Number,
+  id: number,
+  groupId: number,
   title: string,
   description: string,
-  updateCardGroup: Function,
-  addToCardGroup: Function,
   cardGroup: any
 }>()
 
 onMounted(() => console.log(props.cardGroup,"reactive cards"))
-const emit = defineEmits(['update-groups']);
 
 
-const { updateCard, deleteCard, addCard } = useCards()
+const { updateCard, deleteCard} = useCards()
 
 const deleteUpdate = async () => {
   await deleteCard(props.id)
-  props.updateCardGroup(props.groupId)
+ await loadKanbanGroups()
 }
 
 const onDragStart = (event: DragEvent) => {
@@ -47,23 +44,17 @@ const onDrop = async (event: DragEvent, id: Number) => {
   const data = event.dataTransfer?.getData('data');
   if (!data) return;
   const draggedCard = JSON.parse(data);
-  let originalGroupId = draggedCard.groupId;
   draggedCard.groupId = id;
   await updateCard(draggedCard.id, draggedCard)
-  updateGroupsRef(originalGroupId, draggedCard.groupId, draggedCard.id)
+  loadKanbanGroups()
 
-  console.log(id, originalGroupId)
-
-
-  emit('update-groups', { from: originalGroupId, to: draggedCard.groupId, cardId: draggedCard.id });
 };
 </script>
 
 <template>
 
   <div  @drop="onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent class="drop-zone">
-    <div class="cursor-pointer" draggable="true"  @dragstart="onDragStart" :id="props.id" :groupId="props.groupId">
-      <h2>lollllllllllllllllllllll</h2>
+    <div class="cursor-pointer" draggable="true"  @dragstart="onDragStart" :id="String(props.id)" :groupId="props.groupId">
       <button @click="deleteUpdate()" class="delete-btn">&#10006;</button>
       <slot></slot>
     </div>

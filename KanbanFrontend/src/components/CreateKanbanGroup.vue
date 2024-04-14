@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue'
+import { ref } from 'vue'
 import useKanbanGroups from '@/composeables/useKanbanGroups'
-
+import { loadKanbanGroups } from '@/globalState'
 
 const displayForm = ref(false)
 
-const { getKanbanGroups, addKanbanGroup } = useKanbanGroups()
+const {addKanbanGroup } = useKanbanGroups()
 
 const newGroup = ref<{ title: string }>({ title: '' })
 
-const emit = defineEmits(['new-group'])
 
 const resetForm = () => {
   displayForm.value = false
@@ -18,10 +17,10 @@ const resetForm = () => {
 
 const onSubmit = async () => {
   try {
-    let group = await addKanbanGroup(newGroup.value.title)
+    await addKanbanGroup(newGroup.value.title)
     console.log(newGroup.value.title)
     resetForm()
-    emit('new-group', group)
+    loadKanbanGroups()
   } catch (error) {
     console.error('Error adding new group:', error)
   }

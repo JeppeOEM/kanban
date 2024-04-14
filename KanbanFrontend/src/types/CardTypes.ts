@@ -16,5 +16,5 @@ export interface Card {
 export interface CardDto {
   title: string
   description: string
-  groupId: Number
+  groupId?: Number
 }

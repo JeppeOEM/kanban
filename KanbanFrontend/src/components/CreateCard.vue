@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { CardGroup, type CardDto,  } from '@/types/CardTypes'
+import {  type CardDto,  } from '@/types/CardTypes'
 import useCards from '@/composeables/useCards'
+
+
+import { loadKanbanGroups} from '@/globalState'
 
 const props = defineProps({
   groupId: Number,
- updateCardGroup: Function,
- cardGroup: Array
+
 })
 
 const displayForm = ref(false)
-
 const { addCard } = useCards()
 
 const newCard = reactive<CardDto>({
@@ -30,7 +31,7 @@ const onSubmit = async () => {
     ...newCard
   })
   resetForm()
-  props.updateCardGroup(props.groupId)
+  await loadKanbanGroups()
 
 }
 </script>
