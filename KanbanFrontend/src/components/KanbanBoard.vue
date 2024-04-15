@@ -11,10 +11,6 @@ onMounted(async () => {
   await loadKanbanGroups()
 })
 
-const handleNewGroup = async (group: KanbanGroup) => {
-  kanbanData.value.push(group)
-
-}
 
 </script>
 
@@ -25,7 +21,7 @@ const handleNewGroup = async (group: KanbanGroup) => {
     :title="board.title" 
     :groupId="board.id" 
     :cards="board.cards"/>
-    <CreateKanbanGroup @new-group="handleNewGroup"></CreateKanbanGroup>
+    <CreateKanbanGroup></CreateKanbanGroup>
   </div>
   
 </template>

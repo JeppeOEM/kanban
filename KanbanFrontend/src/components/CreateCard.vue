@@ -25,7 +25,6 @@ const resetForm = () => {
 
 const onSubmit = async () => {
 
-  // add new card
   await addCard({
     ...newCard
   })
