@@ -5,8 +5,8 @@ import { loadKanbanGroups} from '@/globalState'
 
 
 const props = defineProps<{
-  id: number,
-  groupId: number,
+  id: number | undefined, 
+  groupId: number | undefined,
   title: string,
   description: string,
   cardGroup: any
@@ -19,7 +19,10 @@ const props = defineProps<{
 const { deleteCard} = useCards()
 
 const deleteUpdate = async () => {
-  await deleteCard(props.id)
+  if (props.id !== undefined){
+
+    await deleteCard(props.id)
+  }
  await loadKanbanGroups()
 }
 

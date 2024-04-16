@@ -7,13 +7,13 @@ import type { Card } from '@/types/CardTypes'
 import { loadKanbanGroups } from '@/globalState'
 import useCards from '@/composeables/useCards'
 
-const props = defineProps({
-  groupId: Number,
-  title: String,
-  cards: Array
-})
+const props = defineProps<{
+  groupId: number | undefined,
+  title: string,
+  cards: Array<Card>
+}>()
 
-const { updateCard} = useCards()
+const { updateCard } = useCards()
 const { deleteKanbanGroup, updateKanbanGroup } = useKanbanGroups()
 
 const editedTitle = ref(props.title)
@@ -68,8 +68,12 @@ const onDelete = async () => {
   }
 }
 
-const onDrop = async (event: DragEvent, id: Number) => {
+const onDrop = async (event: DragEvent, id: number | undefined) => {
   event.preventDefault();
+  if (id === undefined) {
+    console.error('groupId is undefined');
+    return;
+  }
   const data = event.dataTransfer?.getData('data');
   if (!data) return;
   const draggedCard = JSON.parse(data);
@@ -80,14 +84,6 @@ const onDrop = async (event: DragEvent, id: Number) => {
 };
 
 
-const onDropInParent = (event: DragEvent) => {
-  event.preventDefault();
-  const data = event.dataTransfer?.getData('data');
-  if (!data) return;
-  const draggedCard = JSON.parse(data);
-  // Handle drop event in the parent component
-}
-
 watch(() => props.cards, (newValue, oldValue) => {
   cardGroup.value = newValue
 })
@@ -96,7 +92,7 @@ watch(() => props.cards, (newValue, oldValue) => {
 </script>
 <template>
   <div class="p-2 min-h-full" @drop="onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent>
-    <section class="p-4 rounded pink-bg align-top list-none drop-zone h-auto min-w-[300px]">
+    <section class="p-4 rounded pink-bg align-top list-none drop-zone h-auto min-w-[250px]">
       <div class="w-full flex flex-row justify-between">
         <article class="cursor-pointer flex-grow" @click="startEditing($event)" @mouseover="showEditIcon = true"
           @mouseleave="showEditIcon = false">
@@ -127,7 +123,7 @@ watch(() => props.cards, (newValue, oldValue) => {
 </template>
 
 <style scoped>
-.pink-bg{
+.pink-bg {
 
   background-color: #F2B8B4
 }

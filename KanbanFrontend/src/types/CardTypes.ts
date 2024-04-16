@@ -10,11 +10,12 @@ export interface Card {
   id: Number
   title: string
   description: string
-  groupId: Number
+  groupId?: Number | undefined
+
 }
 
 export interface CardDto {
   title: string
   description: string
-  groupId?: Number
+  groupId?: Number 
 }
