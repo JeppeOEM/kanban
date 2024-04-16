@@ -15,13 +15,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex justify-around gap-5">
-    <KanbanBoardGroup v-for="board in kanbanData" 
-    :key="String(board.id)" 
-    :title="board.title" 
-    :groupId="board.id" 
-    :cards="board.cards"/>
-    <CreateKanbanGroup></CreateKanbanGroup>
+  <div class="flex flex-row">
+    <div class="h-full flex flex-nowrap">
+      <KanbanBoardGroup v-for="board in kanbanData" :key="String(board.id)" :title="board.title" :groupId="board.id"
+        :cards="board.cards" />
+    </div>
+    <CreateKanbanGroup class="flex-shrink-0 w-32"></CreateKanbanGroup>
   </div>
-  
+
 </template>

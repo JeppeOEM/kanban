@@ -3,16 +3,20 @@ import KanbanBoard from './components/KanbanBoard.vue'
 </script>
 
 <template>
-  <div class="flex flex-col h-screen w-screen">
-    <header class="bg-gray-800 text-white p-4"></header>
 
-    <main class="flex-grow bg-gray-200 p-4">
+
+    <main class="bg p-4 min-h-screen overflow-x-auto box-border">
       <KanbanBoard></KanbanBoard>
     </main>
-  </div>
+
 </template>
 
 <style scoped>
 @media (min-width: 1024px) {
 }
+
+.bg{
+  background-color: #FFECBE;
+}
+
 </style>

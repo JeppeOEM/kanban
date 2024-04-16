@@ -44,8 +44,8 @@ const onDragOver = (event: DragEvent) => {
 <template>
 
   <div @drop="props.onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent
-    class="drop-zone min-h-[100px] min-w-[100px] bg-slate-400 rounded-md">
-    <div class="cursor-pointer  min-h-[100px]" draggable="true" @dragstart="onDragStart" :id="String(props.id)"
+    class="drop-zone mt-4 min-w-[100px] bg-white-400 rounded-md">
+    <div class="cursor-pointer p-2 rounded bg-white" draggable="true" @dragstart="onDragStart" :id="String(props.id)"
       :groupId="props.groupId">
       <button @click="deleteUpdate()" class="delete-btn">&#10006;</button>
       <slot></slot>

@@ -95,37 +95,40 @@ watch(() => props.cards, (newValue, oldValue) => {
 
 </script>
 <template>
-  <section @drop="onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent class="flex-1 list-none drop-zone min-h-20 min-w-20">
-    <article class=" cursor-pointer" @click="startEditing($event)" @mouseover="showEditIcon = true"
-      @mouseleave="showEditIcon = false">
-      <span v-if="!isEditing">{{ editedTitle }}</span>
-      <input v-model="editedTitle" v-else @keyup.enter="submitEdit()" @blur="submitEdit()" />
-      <span v-if="showEditIcon && !isEditing">&#9998;</span>
-    </article>
-    <button class="view-button" @click="onDelete()">
-      <span class="icon">&#10006;</span>
-    </button>
+  <div class="p-2 min-h-full" @drop="onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent>
+    <section class="p-4 rounded pink-bg align-top list-none drop-zone h-auto min-w-[300px]">
+      <div class="w-full flex flex-row justify-between">
+        <article class="cursor-pointer flex-grow" @click="startEditing($event)" @mouseover="showEditIcon = true"
+          @mouseleave="showEditIcon = false">
+          <h2 class="font-bold text-xl pb-2 w-full" v-if="!isEditing">
+            {{ editedTitle }}
+            <span v-if="showEditIcon">&#9998;</span>
+          </h2>
+          <input
+            class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500 mb-2"
+            v-model="editedTitle" v-else @keyup.enter="submitEdit()" @blur="submitEdit()" />
+        </article>
+        <button class="pl-4" @click="onDelete()">
+          <span class="icon">&#10006;</span>
+        </button>
+      </div>
 
-    <div v-if="cardGroup">
-      <DraggableContent  v-for="card in cardGroup" 
-        :cardGroup="cardGroup" 
-        :key="String(card.id)" 
-        :id="card.id" 
-        :groupId="card.groupId" 
-        :title="card.title"
-        :description="card.description"
-        :onDrop ="onDrop">
-        
-        <h3>
-          {{ card.title }}
-        </h3>
-        <p>
-          {{ card.description }}
-        </p>
-      </DraggableContent>
-      <CreateCard :groupId="props.groupId"></CreateCard>
-    </div>
-    <div v-else>Loading cards...</div>
-
-  </section>
+      <div v-if="cardGroup">
+        <DraggableContent v-for="card in cardGroup" :cardGroup="cardGroup" :key="String(card.id)" :id="card.id"
+          :groupId="card.groupId" :title="card.title" :description="card.description" :onDrop="onDrop">
+          <h3 class="font-bold">{{ card.title }}</h3>
+          <p>{{ card.description }}</p>
+        </DraggableContent>
+        <CreateCard :groupId="props.groupId"></CreateCard>
+      </div>
+      <div v-else>Loading cards...</div>
+    </section>
+  </div>
 </template>
+
+<style scoped>
+.pink-bg{
+
+  background-color: #F2B8B4
+}
+</style>
