@@ -1,1 +1,1 @@
-```use npm run dev in both back end frontend folders```
+use npm run dev in both back end frontend folders
