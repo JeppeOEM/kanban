@@ -1,7 +1,6 @@
 import { get, post, del, put } from '@/axiosFetch'
 import type { KanbanGroup, KanbanGroupDto } from '@/types/KanbanGroupTypes'
 
-export default () => {
   const getKanbanGroups = async (): Promise<KanbanGroupDto[]> => {
     try {
       const data = await get<KanbanGroupDto[]>('/groups')
@@ -37,5 +36,6 @@ export default () => {
     }
   }
 
-  return { getKanbanGroups, addKanbanGroup, deleteKanbanGroup, updateKanbanGroup }
-}
+  export { getKanbanGroups, addKanbanGroup, deleteKanbanGroup, updateKanbanGroup }
+
+

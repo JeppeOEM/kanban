@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import useKanbanGroups from '@/composeables/useKanbanGroups'
+import { addKanbanGroup } from '@/composeables/useKanbanGroups'
 import { loadKanbanGroups } from '@/globalState'
 
 const displayForm = ref(false)
-
-const {addKanbanGroup } = useKanbanGroups()
-
 const newGroup = ref<{ title: string }>({ title: '' })
-
 
 const resetForm = () => {
   displayForm.value = false

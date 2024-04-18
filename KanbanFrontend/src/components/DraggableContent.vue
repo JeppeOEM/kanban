@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import useCards from '@/composeables/useCards'
+import { deleteCard } from '@/composeables/useCards'
 import { loadKanbanGroups} from '@/globalState'
 
 
@@ -13,10 +13,6 @@ const props = defineProps<{
   onDrop: Function
 }>()
 
-
-
-
-const { deleteCard} = useCards()
 
 const deleteUpdate = async () => {
   if (props.id !== undefined){

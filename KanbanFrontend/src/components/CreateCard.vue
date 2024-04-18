@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { defineProps, ref, reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { type CardDto } from '@/types/CardTypes'
-import useCards from '@/composeables/useCards'
+import { addCard } from '@/composeables/useCards'
 import { loadKanbanGroups } from '@/globalState'
 
-const props = defineProps({
-  groupId: Number,
-})
+const props = defineProps<{
+  groupId: number,
+}>()
 
 const displayForm = ref(false)
-const { addCard } = useCards()
+
 
 const newCard = reactive<CardDto>({
   title: '',

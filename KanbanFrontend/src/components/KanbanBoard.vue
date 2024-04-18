@@ -2,15 +2,11 @@
 import KanbanBoardGroup from './KanbanBoardGroup.vue'
 import CreateKanbanGroup from './CreateKanbanGroup.vue'
 import { onMounted } from 'vue'
-import type { KanbanGroup } from '@/types/KanbanGroupTypes'
 import { kanbanData, loadKanbanGroups } from '@/globalState'
-
-
 
 onMounted(async () => {
   await loadKanbanGroups()
 })
-
 
 </script>
 
@@ -22,5 +18,4 @@ onMounted(async () => {
     </div>
     <CreateKanbanGroup class="flex-shrink-0 w-32"></CreateKanbanGroup>
   </div>
-
 </template>

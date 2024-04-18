@@ -2,13 +2,13 @@ import type { Card } from "./CardTypes"
 
 export interface KanbanGroup {
   id?: Number
-  title: string
-  cards?: Array<Card>
+  title: String
+  cards?: Card[]
 }
 
 export interface KanbanGroupDto {
   id?: Number
-  title: string
-  cards?: Array<Card>
+  title: String
+  cards?: Card[]
 
 }

@@ -1,25 +1,22 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import useKanbanGroups from '@/composeables/useKanbanGroups'
 import CreateCard from './CreateCard.vue'
 import DraggableContent from './DraggableContent.vue'
-import type { Card } from '@/types/CardTypes'
+import { type Card } from '@/types/CardTypes'
 import { loadKanbanGroups } from '@/globalState'
-import useCards from '@/composeables/useCards'
+import { updateCard } from '@/composeables/useCards'
+import { deleteKanbanGroup, updateKanbanGroup } from '@/composeables/useKanbanGroups'
 
 const props = defineProps<{
-  groupId: number | undefined,
+  groupId: number,
   title: string,
   cards: Array<Card>
 }>()
 
-const { updateCard } = useCards()
-const { deleteKanbanGroup, updateKanbanGroup } = useKanbanGroups()
-
 const editedTitle = ref(props.title)
 const showEditIcon = ref(false)
 const isEditing = ref(false)
-const currentTitleId = ref<Number | undefined>(undefined)
+const currentTitleId = ref<number | undefined>()
 
 
 const cardGroup = ref<Card[]>([])
@@ -32,13 +29,7 @@ const startEditing = async (event: Event) => {
   }
   isEditing.value = true
   currentTitleId.value = props.groupId
-  const target = event.target
 
-  if (target !== null) {
-    // let h3 = await target.closest('h3')
-    // let input = h3.querySelector('input')
-    // input.focus()
-  }
 }
 
 const submitEdit = async () => {
@@ -124,7 +115,6 @@ watch(() => props.cards, (newValue, oldValue) => {
 
 <style scoped>
 .pink-bg {
-
   background-color: #F2B8B4
 }
 </style>

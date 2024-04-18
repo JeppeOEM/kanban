@@ -20,7 +20,6 @@ db.serialize(() => {
       console.error("Error enabling foreign keys:", err.message);
       return;
     }
-
     db.exec(sqlCommands, (err) => {
       if (err) {
         console.error("Error executing SQL commands:", err.message);
