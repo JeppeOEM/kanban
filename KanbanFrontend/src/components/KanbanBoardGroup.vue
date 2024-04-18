@@ -8,7 +8,7 @@ import { updateCard } from '@/hooks/useCards'
 import { deleteKanbanGroup, updateKanbanGroup } from '@/hooks/useKanbanGroups'
 
 const props = defineProps<{
-  groupId: number,
+  groupId: number | undefined,
   title: string,
   cards: Array<Card>
 }>()
