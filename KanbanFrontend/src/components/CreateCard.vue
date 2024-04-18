@@ -25,8 +25,8 @@ const resetForm = () => {
 
 const onSubmit = async () => {
   await addCard({ ...newCard })
+  await loadKanbanGroups()
   resetForm()
-  loadKanbanGroups()
 }
 </script>
 

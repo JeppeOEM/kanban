@@ -26,7 +26,7 @@ db.serialize(() => {
         return;
       }
 
-      const defaultgroups = ["Team Resources", "To Do", "Doing", "Done", "Additional Questions"];
+      const defaultgroups = ["Team Resources", "To Do", "Doing", "Done", "Questions"];
       const insertListQuery = db.prepare("INSERT INTO groups (title) VALUES (?)");
 
       defaultgroups.forEach((title) => {
