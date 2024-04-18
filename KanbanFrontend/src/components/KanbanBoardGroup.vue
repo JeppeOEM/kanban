@@ -82,7 +82,7 @@ watch(() => props.cards, (newValue, oldValue) => {
 
 </script>
 <template>
-  <div class="p-2 min-h-full" @drop="onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent>
+  <div class="p-2 min-h-full flex-grow" @drop="onDrop($event, props.groupId)" @dragenter.prevent @dragover.prevent>
     <section class="p-4 rounded pink-bg align-top list-none drop-zone h-auto min-w-[250px]">
       <div class="w-full flex flex-row justify-between">
         <article class="cursor-pointer flex-grow" @click="startEditing($event)" @mouseover="showEditIcon = true"
