@@ -2,7 +2,7 @@
 import { ref, reactive } from 'vue'
 import { type CardDto } from '@/types/CardTypes'
 import { addCard } from '@/composeables/useCards'
-import { loadKanbanGroups } from '@/globalState'
+import { loadKanbanGroups } from '@/globalState/loadKanbanGroups'
 
 const props = defineProps<{
   groupId: number,
@@ -49,3 +49,4 @@ const onSubmit = async () => {
     </template>
   </div>
 </template>
+@/globalState/loadKanbanGroups/globalState/loadKanbanGroups

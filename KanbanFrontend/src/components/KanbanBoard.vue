@@ -2,7 +2,7 @@
 import KanbanBoardGroup from './KanbanBoardGroup.vue'
 import CreateKanbanGroup from './CreateKanbanGroup.vue'
 import { onMounted } from 'vue'
-import { kanbanData, loadKanbanGroups } from '@/globalState'
+import { kanbanData, loadKanbanGroups } from '@/globalState/loadKanbanGroups'
 
 onMounted(async () => {
   await loadKanbanGroups()

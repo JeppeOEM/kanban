@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { deleteCard } from '@/composeables/useCards'
-import { loadKanbanGroups} from '@/globalState'
+import { loadKanbanGroups} from '@/globalState/loadKanbanGroups'
 
 
 const props = defineProps<{
@@ -51,3 +51,4 @@ const onDragOver = (event: DragEvent) => {
     </div>
   </div>
 </template>
+@/globalState/loadKanbanGroups/globalState/loadKanbanGroups

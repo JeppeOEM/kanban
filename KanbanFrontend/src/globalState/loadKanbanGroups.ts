@@ -1,8 +1,8 @@
 import { ref, type Ref } from 'vue';
 import { type Card } from '@/types/CardTypes';
-import type { KanbanGroup } from './types/KanbanGroupTypes';
-import { getKanbanGroups } from './composeables/useKanbanGroups';
-import {getCardsById} from './composeables/useCards';
+import type { KanbanGroup } from '../types/KanbanGroupTypes';
+import { getKanbanGroups } from '../composeables/useKanbanGroups';
+import {getCardsById} from '../composeables/useCards';
 
 export const kanbanData = ref<KanbanGroup[]>([])
 

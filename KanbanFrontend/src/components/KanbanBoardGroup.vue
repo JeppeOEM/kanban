@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import CreateCard from './CreateCard.vue'
 import DraggableContent from './DraggableContent.vue'
 import { type Card } from '@/types/CardTypes'
-import { loadKanbanGroups } from '@/globalState'
+import { loadKanbanGroups } from '@/globalState/loadKanbanGroups'
 import { updateCard } from '@/composeables/useCards'
 import { deleteKanbanGroup, updateKanbanGroup } from '@/composeables/useKanbanGroups'
 
@@ -117,4 +117,4 @@ watch(() => props.cards, (newValue, oldValue) => {
 .pink-bg {
   background-color: #F2B8B4
 }
-</style>
+</style>@/globalState/loadKanbanGroups/globalState/loadKanbanGroups
