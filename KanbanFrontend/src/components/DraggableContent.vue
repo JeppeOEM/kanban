@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { deleteCard } from '@/composeables/useCards'
+import { deleteCard } from '@/hooks/useCards'
 import { loadKanbanGroups} from '@/globalState/loadKanbanGroups'
 
 
@@ -51,4 +51,4 @@ const onDragOver = (event: DragEvent) => {
     </div>
   </div>
 </template>
-@/globalState/loadKanbanGroups/globalState/loadKanbanGroups
+@/globalState/loadKanbanGroups/globalState/loadKanbanGroups@/hooks/useCards

@@ -4,8 +4,8 @@ import CreateCard from './CreateCard.vue'
 import DraggableContent from './DraggableContent.vue'
 import { type Card } from '@/types/CardTypes'
 import { loadKanbanGroups } from '@/globalState/loadKanbanGroups'
-import { updateCard } from '@/composeables/useCards'
-import { deleteKanbanGroup, updateKanbanGroup } from '@/composeables/useKanbanGroups'
+import { updateCard } from '@/hooks/useCards'
+import { deleteKanbanGroup, updateKanbanGroup } from '@/hooks/useKanbanGroups'
 
 const props = defineProps<{
   groupId: number,
@@ -117,4 +117,4 @@ watch(() => props.cards, (newValue, oldValue) => {
 .pink-bg {
   background-color: #F2B8B4
 }
-</style>@/globalState/loadKanbanGroups/globalState/loadKanbanGroups
+</style>@/hooks/useCards@/hooks/useKanbanGroups

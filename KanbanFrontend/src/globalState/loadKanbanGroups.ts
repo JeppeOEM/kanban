@@ -1,13 +1,11 @@
-import { ref, type Ref } from 'vue';
-import { type Card } from '@/types/CardTypes';
+import { ref} from 'vue';
 import type { KanbanGroup } from '../types/KanbanGroupTypes';
-import { getKanbanGroups } from '../composeables/useKanbanGroups';
-import {getCardsById} from '../composeables/useCards';
+import { getKanbanGroups } from '../hooks/useKanbanGroups';
+import {getCardsById} from '../hooks/useCards';
 
 export const kanbanData = ref<KanbanGroup[]>([])
 
 export const loadKanbanGroups = async () => {
-
 
   const data = await getKanbanGroups()
 

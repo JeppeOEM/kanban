@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { addKanbanGroup } from '@/composeables/useKanbanGroups'
+import { addKanbanGroup } from '@/hooks/useKanbanGroups'
 import { loadKanbanGroups } from '@/globalState/loadKanbanGroups'
 
 const displayForm = ref(false)
@@ -44,4 +44,4 @@ const onSubmit = async () => {
     </div>
   </div>
 </template>
-@/globalState/loadKanbanGroups/globalState/loadKanbanGroups
+@/globalState/loadKanbanGroups/globalState/loadKanbanGroups@/hooks/useKanbanGroups
